@@ -1,0 +1,284 @@
+{%- comment -%}
+  AUCIEL custom header section, based on Figma export.
+  Keeps Prestige search, cart drawer, and sidebar menu hooks.
+{%- endcomment -%}
+
+{%- liquid
+  assign menu = section.settings.menu
+  assign sidebar_menu = section.settings.sidebar_menu | default: menu
+-%}
+
+<height-observer variable="header">
+  <x-header class="auciel-header auciel-scope grain-texture">
+    <div class="auciel-header__container">
+      <div class="auciel-header__frame">
+        <div class="auciel-header__top">
+          <div class="auciel-header__brand">
+            <span class="tech-label auciel-header__brand-primary">{{ section.settings.brand_text }}</span>
+            <span class="auciel-header__brand-divider">{{ section.settings.brand_divider }}</span>
+            <span class="tech-label auciel-header__brand-secondary">{{ section.settings.tagline_text }}</span>
+          </div>
+          <div class="auciel-header__stars" aria-hidden="true">{{ section.settings.stars_text }}</div>
+          <div class="tech-label auciel-header__coords">{{ section.settings.coordinates_text }}</div>
+        </div>
+
+        <div class="auciel-header__bottom">
+          <div class="auciel-header__tech barcode-text">
+            {%- assign tech_lines = section.settings.tech_lines | split: '\n' -%}
+            {%- for line in tech_lines -%}
+              {%- if line != blank -%}<div class="auciel-header__line">{{ line }}</div>{%- endif -%}
+            {%- endfor -%}
+          </div>
+
+          <div class="auciel-header__spec barcode-text">
+            {%- assign spec_lines = section.settings.spec_lines | split: '\n' -%}
+            {%- for line in spec_lines -%}
+              {%- if line != blank -%}<div class="auciel-header__line">{{ line }}</div>{%- endif -%}
+            {%- endfor -%}
+          </div>
+
+          <div class="auciel-header__actions">
+            {%- if section.settings.show_search_button -%}
+              <a
+                class="auciel-button auciel-button--outline"
+                href="{{ routes.search_url }}"
+                aria-controls="header-search-{{ section.id }}"
+                aria-label="{{ section.settings.search_label | escape }}"
+              >
+                <span class="tech-label">{{ section.settings.search_label }}</span>
+              </a>
+            {%- endif -%}
+
+            {%- if section.settings.show_cart_button -%}
+              <a
+                class="auciel-button auciel-button--accent auciel-header__cart"
+                href="{{ routes.cart_url }}"
+                aria-label="{{ section.settings.cart_label | escape }}"
+                {% if settings.cart_type != 'page' and request.page_type != 'cart' %}aria-controls="cart-drawer"{% endif %}
+              >
+                <span class="tech-label">
+                  {{ section.settings.cart_label }}
+                  {%- if section.settings.show_cart_count -%}
+                    (<cart-count>{{ cart.item_count }}</cart-count>)
+                  {%- endif -%}
+                </span>
+                <cart-dot class="header__cart-dot {% unless cart.empty? %}is-visible{% endunless %}"></cart-dot>
+              </a>
+            {%- endif -%}
+
+            {%- if section.settings.show_menu_button and sidebar_menu.links.size > 0 -%}
+              <button
+                type="button"
+                class="auciel-button auciel-button--accent"
+                aria-controls="sidebar-menu"
+                aria-label="{{ section.settings.menu_label | escape }}"
+              >
+                <span class="tech-label">{{ section.settings.menu_label }}</span>
+              </button>
+            {%- endif -%}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {%- if section.settings.enable_search -%}
+      {%- render 'header-search' -%}
+    {%- endif -%}
+
+    {%- if sidebar_menu.links.size > 0 -%}
+      {%- render 'header-sidebar', menu: sidebar_menu, show_dividers: section.settings.sidebar_show_dividers -%}
+    {%- endif -%}
+  </x-header>
+</height-observer>
+
+{%- if section.settings.enable_sticky -%}
+  <style>
+    #shopify-section-{{ section.id }} { position: sticky; top: 0; z-index: 5; }
+    .shopify-section--announcement-bar ~ #shopify-section-{{ section.id }} {
+      top: calc(var(--announcement-bar-is-sticky, 0) * var(--announcement-bar-height, 0px));
+    }
+  </style>
+{%- endif -%}
+
+<script>
+  document.documentElement.style.setProperty('--header-height', `${Math.round(document.getElementById('shopify-section-{{ section.id }}').clientHeight)}px`);
+</script>
+
+{% schema %}
+{
+  "name": "AUCIEL Header",
+  "class": "shopify-section--header",
+  "tag": "header",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "enable_sticky",
+      "label": "Enable sticky header",
+      "default": true
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Primary menu",
+      "default": "main-menu"
+    },
+    {
+      "type": "link_list",
+      "id": "sidebar_menu",
+      "label": "Menu drawer (mobile)",
+      "default": "main-menu"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_search",
+      "label": "Enable predictive search",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "sidebar_text_font",
+      "label": "Drawer text font",
+      "options": [
+        { "value": "heading", "label": "Heading" },
+        { "value": "body", "label": "Body" }
+      ],
+      "default": "heading"
+    },
+    {
+      "type": "checkbox",
+      "id": "sidebar_show_dividers",
+      "label": "Show dividers in drawer",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Top bar"
+    },
+    {
+      "type": "text",
+      "id": "brand_text",
+      "label": "Brand text",
+      "default": "AUCIEL"
+    },
+    {
+      "type": "text",
+      "id": "brand_divider",
+      "label": "Divider",
+      "default": "//"
+    },
+    {
+      "type": "text",
+      "id": "tagline_text",
+      "label": "Tagline text",
+      "default": "COSMIC APPAREL SYSTEM"
+    },
+    {
+      "type": "text",
+      "id": "stars_text",
+      "label": "Stars text",
+      "default": "✦ ✦ ✦"
+    },
+    {
+      "type": "text",
+      "id": "coordinates_text",
+      "label": "Coordinates text",
+      "default": "40.7128° N, 74.0060° W"
+    },
+    {
+      "type": "header",
+      "content": "Bottom bar"
+    },
+    {
+      "type": "textarea",
+      "id": "tech_lines",
+      "label": "Technical lines (one per line)",
+      "default": "TECHNICAL ERATE: DORAM OKKE 40 0035 055\nOROURGRBRASS, DASS-CALIX / ASS OSSIX\nDATA OORECT EST 2087 // 40.7128° N, 74.0060° W"
+    },
+    {
+      "type": "textarea",
+      "id": "spec_lines",
+      "label": "Specification lines (one per line)",
+      "default": "SPECIFICATION: URBAN EXPLORER\nMATERIAL: PHASE-SHIFT\nSERIAL NO: 475-XG"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_search_button",
+      "label": "Show search button",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_cart_button",
+      "label": "Show cart button",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_menu_button",
+      "label": "Show menu button",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_cart_count",
+      "label": "Show cart item count",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "search_label",
+      "label": "Search label",
+      "default": "SEARCH"
+    },
+    {
+      "type": "text",
+      "id": "cart_label",
+      "label": "Cart label",
+      "default": "CART"
+    },
+    {
+      "type": "text",
+      "id": "menu_label",
+      "label": "Menu label",
+      "default": "MENU"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "@app",
+      "name": "App block"
+    },
+    {
+      "type": "mega_menu",
+      "name": "Mega menu images",
+      "settings": [
+        { "type": "text", "id": "menu_item", "label": "Menu item title" },
+        {
+          "type": "select",
+          "id": "images_position",
+          "label": "Images position",
+          "options": [
+            { "value": "left", "label": "Left" },
+            { "value": "right", "label": "Right" }
+          ],
+          "default": "right"
+        },
+        { "type": "header", "content": "Image 1" },
+        { "type": "image_picker", "id": "image_1", "label": "Image" },
+        { "type": "inline_richtext", "id": "image_1_heading", "label": "Heading" },
+        { "type": "richtext", "id": "image_1_text", "label": "Text" },
+        { "type": "url", "id": "image_1_link", "label": "Link" },
+        { "type": "header", "content": "Image 2" },
+        { "type": "image_picker", "id": "image_2", "label": "Image" },
+        { "type": "inline_richtext", "id": "image_2_heading", "label": "Heading" },
+        { "type": "richtext", "id": "image_2_text", "label": "Text" },
+        { "type": "url", "id": "image_2_link", "label": "Link" }
+      ]
+    }
+  ],
+  "presets": [
+    { "name": "AUCIEL Header" }
+  ]
+}
+{% endschema %}
+

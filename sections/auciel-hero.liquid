@@ -1,0 +1,99 @@
+{%- comment -%}
+  AUCIEL hero section, based on Figma export.
+{%- endcomment -%}
+
+<section class="auciel-hero auciel-scope grain-texture">
+  <div class="auciel-hero__panel">
+    <div class="auciel-hero__frame">
+      <svg class="auciel-hero__border" preserveAspectRatio="none" viewBox="0 0 300.53 408.32" aria-hidden="true">
+        <g>
+          <polygon class="auciel-hero__border-main" points=".5 9.72 9.93 .5 110.04 .5 121.4 12.08 289.02 12.08 299.74 22.58 300.03 391.23 282 407.82 9.78 407.82 .5 399.01 .5 9.72" vector-effect="non-scaling-stroke" stroke-width="2"/>
+          <polygon class="auciel-hero__border-chip" points="124.12 8.75 116.73 1.08 136.41 1.08 143.71 8.75 124.12 8.75" vector-effect="non-scaling-stroke" stroke-width="2"/>
+          <polygon class="auciel-hero__border-chip" points="139.92 1.08 146.95 8.75 151.86 8.75 144.37 1.08 139.92 1.08" vector-effect="non-scaling-stroke" stroke-width="2"/>
+          <polygon class="auciel-hero__border-chip" points="147.53 1.08 154.89 8.75 157.34 8.75 150.17 1.08 147.53 1.08" vector-effect="non-scaling-stroke" stroke-width="2"/>
+        </g>
+      </svg>
+
+      <div class="auciel-hero__stripes halftone-overlay" aria-hidden="true"></div>
+
+      <div class="auciel-hero__title" aria-hidden="true">
+        {{ section.settings.heading | escape | newline_to_br }}
+      </div>
+
+      <div class="auciel-hero__image halftone-overlay">
+        {%- if section.settings.image != blank -%}
+          {{ section.settings.image | image_url: width: 2400 | image_tag: class: 'auciel-hero__img', loading: 'lazy', alt: section.settings.image.alt | default: section.settings.heading }}
+        {%- else -%}
+          <div class="auciel-hero__img-placeholder"></div>
+        {%- endif -%}
+      </div>
+
+      {%- if section.settings.show_orbital_lines -%}
+        <svg class="auciel-hero__orbital" viewBox="0 0 100 100" aria-hidden="true">
+          <circle cx="50" cy="50" r="30" fill="none" stroke="currentColor" stroke-width="0.5"/>
+          <circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" stroke-width="0.5" stroke-dasharray="2,2"/>
+          <circle cx="50" cy="50" r="2" fill="currentColor"/>
+        </svg>
+      {%- endif -%}
+
+      {%- if section.settings.button_text != blank -%}
+        <div class="auciel-hero__button-wrap">
+          <a class="auciel-hero__button" href="{{ section.settings.button_link | default: routes.all_products_collection_url }}">
+            <span class="auciel-hero__button-text">{{ section.settings.button_text }}</span>
+          </a>
+        </div>
+      {%- endif -%}
+
+      <div class="auciel-hero__star" aria-hidden="true">✦</div>
+      <div class="auciel-hero__coords tech-label">{{ section.settings.coords_text }}</div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "AUCIEL Hero",
+  "tag": "section",
+  "class": "shopify-section--auciel-hero",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Hero image"
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Large heading text",
+      "default": "AU\nCIEL"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "SHOP"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "text",
+      "id": "coords_text",
+      "label": "Corner coordinates text",
+      "default": "0-20° 80°83.74°"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_orbital_lines",
+      "label": "Show orbital decoration",
+      "default": true
+    }
+  ],
+  "presets": [
+    { "name": "AUCIEL Hero" }
+  ]
+}
+{% endschema %}
+

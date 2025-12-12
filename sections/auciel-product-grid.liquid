@@ -1,0 +1,238 @@
+{%- comment -%}
+  AUCIEL product grid section, based on Figma export.
+  Uses real Shopify products from a selected collection.
+{%- endcomment -%}
+
+{%- liquid
+  assign collection = section.settings.collection
+  assign limit = section.settings.products_limit
+  if collection == blank
+    assign products = collections.all.products
+  else
+    assign products = collection.products
+  endif
+-%}
+
+<section class="auciel-product-grid auciel-scope grain-texture">
+  <div class="auciel-product-grid__container">
+    <header class="auciel-product-grid__header">
+      <div class="auciel-product-grid__header-left">
+        <h2 class="auciel-product-grid__title">{{ section.settings.title }}</h2>
+        <span class="auciel-product-grid__slash" aria-hidden="true">//</span>
+        <div class="tech-label auciel-product-grid__stream">{{ section.settings.stream_label }}</div>
+      </div>
+
+      <div class="auciel-product-grid__header-right" aria-hidden="true">
+        <span class="auciel-product-grid__marks">///</span>
+        <span class="auciel-product-grid__plus">+</span>
+        {%- if section.settings.show_progress_bar -%}
+          <div class="auciel-product-grid__progress">
+            <div class="auciel-product-grid__progress-track">
+              <div class="auciel-product-grid__progress-fill"></div>
+            </div>
+          </div>
+        {%- endif -%}
+      </div>
+    </header>
+
+    <div
+      class="auciel-product-grid__grid"
+      style="--auciel-cols-mobile: {{ section.settings.columns_mobile }}; --auciel-cols-desktop: {{ section.settings.columns_desktop }};"
+    >
+      {%- for product in products limit: limit -%}
+        {%- assign is_alternate = forloop.index0 | modulo: 2 -%}
+        <article class="auciel-product-card {% if is_alternate == 1 %}is-alternate{% endif %}">
+          <svg class="auciel-product-card__border" preserveAspectRatio="none" viewBox="0 0 526.16 745.87" aria-hidden="true">
+            <g>
+              <polygon class="auciel-product-card__border-main" points=".5 16.58 17.17 .5 507.2 .5 524.47 16.58 525.66 726.91 509.58 745.37 18.96 745.37 .5 728.7 .5 16.58" vector-effect="non-scaling-stroke" stroke-width="2"/>
+              <g>
+                <circle class="auciel-product-card__border-circle" cx="22.11" cy="19.32" r="8.19" vector-effect="non-scaling-stroke" stroke-width="1"/>
+                <line class="auciel-product-card__border-line" x1="28.16" y1="13.82" x2="15.82" y2="24.56" vector-effect="non-scaling-stroke" stroke-width="1"/>
+              </g>
+              <g>
+                <circle class="auciel-product-card__border-circle" cx="505.11" cy="19.32" r="8.19" vector-effect="non-scaling-stroke" stroke-width="1"/>
+                <line class="auciel-product-card__border-line" x1="511.17" y1="13.82" x2="498.83" y2="24.56" vector-effect="non-scaling-stroke" stroke-width="1"/>
+              </g>
+            </g>
+          </svg>
+
+          <div class="auciel-product-card__image-wrap halftone-overlay" data-auciel-card-image>
+            <svg class="auciel-product-card__image-border" preserveAspectRatio="none" viewBox="0 0 490.79 510.39" aria-hidden="true">
+              <polygon class="auciel-product-card__image-border-shape" points=".5 37.16 36.52 .5 452.37 .5 490.29 37.16 490.29 474.49 455.53 509.89 35.26 509.89 .5 476.39 .5 37.16" vector-effect="non-scaling-stroke" stroke-width="2"/>
+            </svg>
+
+            <canvas
+              class="auciel-product-card__canvas"
+              data-src="{{ product.featured_image | image_url: width: 900 }}"
+              data-hover-src="{% if product.images.size > 1 %}{{ product.images[1] | image_url: width: 900 }}{% endif %}"
+              aria-label="{{ product.title | escape }}"
+            ></canvas>
+
+            {%- unless product.available -%}
+              <div class="auciel-product-card__soldout">
+                <div class="auciel-product-card__soldout-badge">
+                  <span class="auciel-product-card__soldout-text">NO ACCESS</span>
+                </div>
+              </div>
+            {%- endunless -%}
+          </div>
+
+          <div class="auciel-product-card__info">
+            <div class="auciel-product-card__details barcode-text">
+              <div class="auciel-product-card__name">{{ product.title }}</div>
+              <div class="auciel-product-card__meta">SPEC: {{ product.metafields.custom.item_code | default: product.id }}</div>
+              <div class="auciel-product-card__meta">
+                MATERIAL:
+                {%- if product.metafields.custom.material != blank -%}
+                  {{ product.metafields.custom.material }}
+                {%- else -%}
+                  {{ product.vendor }}
+                {%- endif -%}
+              </div>
+              <div class="auciel-product-card__meta">
+                SERIAL NO:
+                {%- assign sku = product.selected_or_first_available_variant.sku | default: product.id -%}
+                {{ sku | slice: 0, 6 }}
+              </div>
+            </div>
+
+            <div class="auciel-product-card__price">
+              <svg class="auciel-product-card__price-border" preserveAspectRatio="none" viewBox="0 0 146.38 88.16" aria-hidden="true">
+                <polygon class="auciel-product-card__price-border-shape" points=".5 79.97 .5 10.39 9.65 .5 135.84 .5 145.88 10.02 145.88 79.97 135.84 87.66 8.92 87.66 .5 79.97" vector-effect="non-scaling-stroke" stroke-width="2"/>
+              </svg>
+              <div class="auciel-product-card__price-text">{{ product.price | money }}</div>
+            </div>
+          </div>
+
+          <div class="auciel-product-card__footer">
+            <div class="auciel-product-card__barcode">
+              <div class="auciel-product-card__barcode-lines" aria-hidden="true"></div>
+              <div class="barcode-text auciel-product-card__barcode-text">| {{ product.selected_or_first_available_variant.sku | default: product.id }} |</div>
+            </div>
+
+            {%- assign button_label = section.settings.button_text -%}
+            <a
+              class="auciel-product-card__button {% if is_alternate == 1 %}is-alternate{% endif %} {% unless product.available %}is-disabled{% endunless %}"
+              href="{{ product.url }}"
+              {% unless product.available %}aria-disabled="true" tabindex="-1"{% endunless %}
+            >
+              <svg class="auciel-product-card__button-border" preserveAspectRatio="none" viewBox="0 0 242.33 66.55" aria-hidden="true">
+                <polygon class="auciel-product-card__button-border-shape" points=".5 66.05 .5 .5 241.83 .5 241.83 48.11 226.09 66.05 .5 66.05" vector-effect="non-scaling-stroke" stroke-width="2"/>
+              </svg>
+              <span class="auciel-product-card__button-text">{{ button_label }}</span>
+            </a>
+          </div>
+        </article>
+      {%- else -%}
+        <p class="auciel-product-grid__empty">Select a collection with products.</p>
+      {%- endfor -%}
+    </div>
+
+    {%- if section.settings.show_wave_pattern -%}
+      <div class="auciel-product-grid__wave" aria-hidden="true">
+        <svg class="auciel-product-grid__wave-svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+          <path d="M0,60 Q150,20 300,60 T600,60 T900,60 T1200,60" fill="none" stroke="currentColor" stroke-width="1"/>
+          <path d="M0,80 Q150,40 300,80 T600,80 T900,80 T1200,80" fill="none" stroke="currentColor" stroke-width="1"/>
+          <circle cx="300" cy="60" r="3" fill="currentColor"/>
+          <circle cx="600" cy="60" r="3" fill="currentColor"/>
+          <circle cx="900" cy="60" r="3" fill="currentColor"/>
+          <text x="100" y="40" font-size="16" fill="currentColor">✦</text>
+          <text x="450" y="30" font-size="12" fill="currentColor">✦</text>
+          <text x="750" y="45" font-size="14" fill="currentColor">✦</text>
+          <text x="1050" y="35" font-size="12" fill="currentColor">✦</text>
+        </svg>
+
+        <div class="auciel-product-grid__wave-coords tech-label">
+          {{ section.settings.wave_coords_text }}
+        </div>
+      </div>
+    {%- endif -%}
+  </div>
+
+  <script src="{{ 'auciel-product-card.js' | asset_url }}" defer></script>
+</section>
+
+{% schema %}
+{
+  "name": "AUCIEL Product Grid",
+  "tag": "section",
+  "class": "shopify-section--auciel-products",
+  "settings": [
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection to show"
+    },
+    {
+      "type": "range",
+      "id": "products_limit",
+      "label": "Max products",
+      "min": 4,
+      "max": 24,
+      "step": 1,
+      "default": 8
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "NEW ARRIVALS"
+    },
+    {
+      "type": "text",
+      "id": "stream_label",
+      "label": "Stream label",
+      "default": "DATA STREAM 01"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Card button text",
+      "default": "VIEW DATA"
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "label": "Products per row (mobile)",
+      "options": [
+        { "value": "1", "label": "1" },
+        { "value": "2", "label": "2" }
+      ],
+      "default": "1"
+    },
+    {
+      "type": "select",
+      "id": "columns_desktop",
+      "label": "Products per row (desktop)",
+      "options": [
+        { "value": "2", "label": "2" },
+        { "value": "3", "label": "3" },
+        { "value": "4", "label": "4" }
+      ],
+      "default": "4"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_progress_bar",
+      "label": "Show progress bar decoration",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_wave_pattern",
+      "label": "Show wave decoration",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "wave_coords_text",
+      "label": "Wave coordinates text",
+      "default": "⊕ LAT: +48.856 / LONG: +2.352"
+    }
+  ],
+  "presets": [
+    { "name": "AUCIEL Product Grid" }
+  ]
+}
+{% endschema %}
+

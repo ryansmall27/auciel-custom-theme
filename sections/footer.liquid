@@ -1,0 +1,156 @@
+{%- comment -%}
+  AUCIEL custom footer section, based on Figma export.
+  This file also satisfies the missing Prestige footer section type.
+{%- endcomment -%}
+
+<footer class="auciel-footer auciel-scope grain-texture">
+  <div class="auciel-footer__main">
+    <div class="auciel-footer__container">
+      <div class="auciel-footer__grid">
+        <div class="auciel-footer__left">
+          <div class="auciel-footer__paragraphs barcode-text">
+            <p class="auciel-footer__paragraph">{{ section.settings.paragraph_1 }}</p>
+            <p class="auciel-footer__paragraph">{{ section.settings.paragraph_2 }}</p>
+          </div>
+
+          <div class="auciel-footer__brand-row">
+            <span class="barcode-text auciel-footer__copyright">{{ section.settings.copyright_text }}</span>
+
+            <span class="auciel-footer__stars" aria-hidden="true">
+              ✦ ✦ ✦ ✦ <span class="auciel-footer__stars-small">✦</span>
+            </span>
+
+            <svg class="auciel-footer__oval" viewBox="0 0 80 40" aria-hidden="true">
+              <ellipse cx="40" cy="20" rx="35" ry="15" fill="none" stroke="currentColor" stroke-width="1.5"/>
+              <text x="40" y="24" font-size="8" fill="currentColor" text-anchor="middle" font-family="monospace" font-weight="bold">
+                AU CIEL
+              </text>
+            </svg>
+
+            <div class="auciel-footer__barcode">
+              <svg viewBox="0 0 80 30" class="auciel-footer__barcode-svg" aria-hidden="true">
+                {%- assign widths = "2,1,3,1,2,1,3,2,1,3,1,2,1,3,2,1,3,1,2,1,3,2,1,2" | split: "," -%}
+                {%- for w in widths -%}
+                  <rect x="{{ forloop.index0 | times: 3.2 }}" y="2" width="{{ w | times: 0.8 }}" height="26" fill="currentColor"></rect>
+                {%- endfor -%}
+              </svg>
+              <div class="barcode-text auciel-footer__barcode-text">{{ section.settings.barcode_text }}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="auciel-footer__middle">
+          <div class="barcode-text auciel-footer__data">
+            {%- assign data_lines = section.settings.data_lines | split: '\n' -%}
+            {%- for line in data_lines -%}
+              {%- if line != blank -%}<div class="auciel-footer__data-line">{{ line }}</div>{%- endif -%}
+            {%- endfor -%}
+          </div>
+        </div>
+
+        <div class="auciel-footer__right">
+          {%- if section.settings.show_qr -%}
+            <div class="auciel-footer__qr">
+              <svg viewBox="0 0 29 29" class="auciel-footer__qr-svg" aria-hidden="true">
+                {%- for y in (0..28) -%}
+                  {%- for x in (0..28) -%}
+                    {%- assign is_finder_tl = x < 7 and y < 7 -%}
+                    {%- assign is_finder_tr = x > 21 and y < 7 -%}
+                    {%- assign is_finder_bl = x < 7 and y > 21 -%}
+                    {%- assign should_fill = false -%}
+
+                    {%- if is_finder_tl or is_finder_tr or is_finder_bl -%}
+                      {%- assign fx = x -%}
+                      {%- assign fy = y -%}
+                      {%- if is_finder_tr -%}{%- assign fx = x | minus: 22 -%}{%- endif -%}
+                      {%- if is_finder_bl -%}{%- assign fy = y | minus: 22 -%}{%- endif -%}
+                      {%- assign should_fill = fx == 0 or fx == 6 or fy == 0 or fy == 6 or (fx >= 2 and fx <= 4 and fy >= 2 and fy <= 4) -%}
+                    {%- else -%}
+                      {%- assign v = x | plus: y -%}
+                      {%- assign should_fill = v | modulo: 3 == 0 -%}
+                    {%- endif -%}
+
+                    {%- if should_fill -%}
+                      <rect x="{{ x }}" y="{{ y }}" width="1" height="1" fill="currentColor"></rect>
+                    {%- endif -%}
+                  {%- endfor -%}
+                {%- endfor -%}
+              </svg>
+            </div>
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="auciel-footer__strip">
+    <div class="auciel-footer__container">
+      <div class="auciel-footer__strip-inner barcode-text">
+        <div class="auciel-footer__strip-left">{{ section.settings.strip_left_text }}</div>
+        <div class="auciel-footer__strip-right">{{ section.settings.strip_right_text }}</div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "AUCIEL Footer",
+  "tag": "footer",
+  "class": "shopify-section--footer",
+  "settings": [
+    {
+      "type": "textarea",
+      "id": "paragraph_1",
+      "label": "Paragraph 1",
+      "default": "AU CIEL REPRESENTS A NEW ERA IN COSMIC APPAREL TECHNOLOGY. EACH GARMENT IS PRECISION-ENGINEERED FOR URBAN EXPLORATION AND INTERSTELLAR READINESS. OUR PHASE-SHIFT COTTON BLEND ADAPTS TO ENVIRONMENTAL CONDITIONS WHILE MAINTAINING STRUCTURAL INTEGRITY ACROSS MULTIPLE ATMOSPHERIC PRESSURES."
+    },
+    {
+      "type": "textarea",
+      "id": "paragraph_2",
+      "label": "Paragraph 2",
+      "default": "MANUFACTURED IN ACCORDANCE WITH GALACTIC TEXTILE STANDARDS (GTS-2088) AND CERTIFIED FOR ORBITAL DEPLOYMENT. ALL MATERIALS SOURCED FROM SUSTAINABLE TERRESTRIAL ORIGINS."
+    },
+    {
+      "type": "text",
+      "id": "copyright_text",
+      "label": "Copyright text",
+      "default": "© 2025 AU CIEL // EST. 2088"
+    },
+    {
+      "type": "text",
+      "id": "barcode_text",
+      "label": "Barcode text",
+      "default": "4750262088305"
+    },
+    {
+      "type": "textarea",
+      "id": "data_lines",
+      "label": "Technical data lines (one per line)",
+      "default": "DATA: COSMIC-APPAREL-SYS\nMATERIALS: PHASE-COTTON\nSHOCK: RESISTANT / ORBITAL\nSERIAL NO.: 475-XG-2088\nCOORD: 48.8566° N, 2.3522° E\nSTATUS: ◆ OPERATIONAL"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_qr",
+      "label": "Show QR decoration",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "strip_left_text",
+      "label": "Bottom strip left text",
+      "default": "■ AUCIEL COSMIC APPAREL SYSTEM // EST. 2088 | PARIS, FRANCE // EARTH"
+    },
+    {
+      "type": "text",
+      "id": "strip_right_text",
+      "label": "Bottom strip right text",
+      "default": "REV. 1.0.0 | BUILD: 20881211 | STATUS: ◆ ONLINE"
+    }
+  ],
+  "presets": [
+    { "name": "AUCIEL Footer" }
+  ]
+}
+{% endschema %}
+
