@@ -1,1 +1,61 @@
-{"type":"header","name":"Header group","sections":{"header":{"type":"auciel-header","blocks":{"mega_menu_fF43zF":{"type":"mega_menu","settings":{"menu_item":"","images_position":"right","image_1_heading":"","image_1_text":"","image_1_link":"","image_2_heading":"","image_2_text":"","image_2_link":""}}},"block_order":["mega_menu_fF43zF"],"custom_css":[],"settings":{"enable_sticky":true,"show_separation_border":false,"reduce_padding":true,"logo":"shopify:\/\/shop_images\/AU_CIEL_header_logo_280x80_black.png","logo_max_width":140,"logo_mobile_max_width":125,"menu":"main-menu","menu_open_trigger":"hover","enable_search":true,"sidebar_text_font":"body","sidebar_show_dividers":false,"layout":"logo_center_navigation_inline","show_icons":false,"show_country_selector":false,"show_country_name":false,"show_country_flag":false,"show_locale_selector":false,"transparent_header_text_color":"#ffffff","transparent_logo":"shopify:\/\/shop_images\/AU_CIEL_header_logo_280x80_white.png"}}},"order":["header"]}
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "type": "header",
+  "name": "Header group",
+  "sections": {
+    "header": {
+      "type": "auciel-header",
+      "blocks": {
+        "mega_menu_fF43zF": {
+          "type": "mega_menu",
+          "settings": {
+            "menu_item": "",
+            "images_position": "right",
+            "image_1_heading": "",
+            "image_1_text": "",
+            "image_1_link": "",
+            "image_2_heading": "",
+            "image_2_text": "",
+            "image_2_link": ""
+          }
+        }
+      },
+      "block_order": [
+        "mega_menu_fF43zF"
+      ],
+      "custom_css": [],
+      "settings": {
+        "enable_sticky": true,
+        "menu": "main-menu",
+        "enable_search": true,
+        "sidebar_text_font": "body",
+        "sidebar_show_dividers": false,
+        "brand_text": "AUCIEL",
+        "brand_divider": "//",
+        "tagline_text": "COSMIC APPAREL SYSTEM",
+        "stars_text": "✦ ✦ ✦",
+        "coordinates_text": "40.7128° N, 74.0060° W",
+        "tech_lines": "TECHNICAL ERATE: DORAM OKKE 40 0035 055\nOROURGRBRASS, DASS-CALIX / ASS OSSIX\nDATA OORECT EST 2087 // 40.7128° N, 74.0060° W",
+        "spec_lines": "SPECIFICATION: URBAN EXPLORER\nMATERIAL: PHASE-SHIFT\nSERIAL NO: 475-XG",
+        "show_search_button": true,
+        "show_cart_button": true,
+        "show_menu_button": true,
+        "show_cart_count": false,
+        "search_label": "SEARCH",
+        "cart_label": "CART",
+        "menu_label": "MENU"
+      }
+    }
+  },
+  "order": [
+    "header"
+  ]
+}
