@@ -8,18 +8,22 @@
   assign sidebar_menu = menu
 -%}
 
-<height-observer variable="header">
+<height-observer variable="header" {% if section.settings.allow_transparent_header %}allow-transparent-header{% endif %}>
   <x-header class="auciel-header auciel-scope grain-texture">
     <div class="auciel-header__container">
       <div class="auciel-header__frame">
         <div class="auciel-header__top">
           <div class="auciel-header__brand">
-            <span class="tech-label auciel-header__brand-primary">{{ section.settings.brand_text }}</span>
-            <span class="auciel-header__brand-divider">{{ section.settings.brand_divider }}</span>
-            <span class="tech-label auciel-header__brand-secondary">{{ section.settings.tagline_text }}</span>
+            {%- if section.settings.logo -%}
+              {{ section.settings.logo | image_url: width: 300 | image_tag: class: 'auciel-header__logo', alt: section.settings.brand_text }}
+            {%- else -%}
+              <span class="tech-label auciel-header__brand-primary" style="font-size: {{ section.settings.brand_font_size }}px">{{ section.settings.brand_text }}</span>
+              <span class="auciel-header__brand-divider">{{ section.settings.brand_divider }}</span>
+              <span class="tech-label auciel-header__brand-secondary" style="font-size: {{ section.settings.label_font_size }}px">{{ section.settings.tagline_text }}</span>
+            {%- endif -%}
           </div>
           <div class="auciel-header__stars" aria-hidden="true">{{ section.settings.stars_text }}</div>
-          <div class="tech-label auciel-header__coords">{{ section.settings.coordinates_text }}</div>
+          <div class="tech-label auciel-header__coords" style="font-size: {{ section.settings.label_font_size | times: 0.6 }}px">{{ section.settings.coordinates_text }}</div>
         </div>
 
         <div class="auciel-header__bottom">
@@ -112,6 +116,12 @@
   "settings": [
     {
       "type": "checkbox",
+      "id": "allow_transparent_header",
+      "label": "Allow transparent header on top of hero",
+      "default": false
+    },
+    {
+      "type": "checkbox",
       "id": "enable_sticky",
       "label": "Enable sticky header",
       "default": true
@@ -147,6 +157,34 @@
     {
       "type": "header",
       "content": "Top bar"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo"
+    },
+    {
+      "type": "image_picker",
+      "id": "transparent_logo",
+      "label": "Transparent logo"
+    },
+    {
+      "type": "range",
+      "id": "brand_font_size",
+      "label": "Brand font size (px)",
+      "min": 10,
+      "max": 32,
+      "step": 1,
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "label_font_size",
+      "label": "Label font size (px)",
+      "min": 8,
+      "max": 24,
+      "step": 1,
+      "default": 14
     },
     {
       "type": "text",

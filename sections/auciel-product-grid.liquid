@@ -13,7 +13,12 @@
   endif
 -%}
 
-<section class="auciel-product-grid auciel-scope grain-texture">
+<section
+  class="auciel-product-grid auciel-scope grain-texture"
+  data-auciel-product-grid
+  data-pixelate="{{ section.settings.enable_pixelate }}"
+  data-pixel-strength="{{ section.settings.pixel_strength }}"
+>
   <div class="auciel-product-grid__container">
     <header class="auciel-product-grid__header">
       <div class="auciel-product-grid__header-left">
@@ -228,6 +233,21 @@
       "id": "wave_coords_text",
       "label": "Wave coordinates text",
       "default": "⊕ LAT: +48.856 / LONG: +2.352"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_pixelate",
+      "label": "Enable pixelation hover effect",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "pixel_strength",
+      "label": "Pixelation intensity",
+      "min": 5,
+      "max": 80,
+      "step": 5,
+      "default": 20
     }
   ],
   "presets": [
@@ -235,4 +255,3 @@
   ]
 }
 {% endschema %}
-

@@ -1,5 +1,11 @@
 (() => {
-  function initCanvas(canvas) {
+  function buildPixelSteps(minRatio) {
+    const clamped = Math.max(0.05, Math.min(minRatio, 0.9));
+    const mid = clamped;
+    return [1, 0.8, 0.6, mid * 1.1, mid, mid * 1.1, 0.6, 0.8, 1];
+  }
+
+  function initCanvas(canvas, opts) {
     const container = canvas.closest('[data-auciel-card-image]');
     if (!container) return;
 
@@ -34,15 +40,44 @@
       const h = canvas.height;
       ctx.clearRect(0, 0, w, h);
       ctx.imageSmoothingEnabled = false;
+      ctx.mozImageSmoothingEnabled = false;
+      ctx.msImageSmoothingEnabled = false;
+      ctx.webkitImageSmoothingEnabled = false;
       const scaledW = Math.max(1, Math.floor(w * blockSize));
       const scaledH = Math.max(1, Math.floor(h * blockSize));
       ctx.drawImage(img, 0, 0, scaledW, scaledH);
       ctx.drawImage(canvas, 0, 0, scaledW, scaledH, 0, 0, w, h);
     }
 
+    function animatePixelation(fromImg, toImg) {
+      const steps = buildPixelSteps(opts.minRatio);
+      const total = steps.length - 1;
+      let frame = 0;
+
+      function step() {
+        const blockSize = steps[frame];
+        const midPoint = Math.floor(total / 2);
+        const img = frame < midPoint ? fromImg : toImg;
+        drawPixelated(img, blockSize);
+        frame += 1;
+        if (frame <= total) {
+          requestAnimationFrame(step);
+        }
+      }
+
+      step();
+    }
+
     function onEnter() {
       const target = img2 || img1;
-      const startAnim = () => drawPixelated(target, 1);
+      const startAnim = () => {
+        if (opts.enablePixelate) {
+          animatePixelation(img1, target);
+        } else {
+          drawPixelated(target, 1);
+        }
+      };
+
       if (img1.complete && target.complete) startAnim();
       else {
         const wait = [];
@@ -50,11 +85,19 @@
         if (!target.complete) wait.push(new Promise(r => target.addEventListener('load', r, { once: true })));
         Promise.all(wait).then(startAnim);
       }
+
       currentImg = target;
     }
 
     function onLeave() {
-      const startAnim = () => drawPixelated(img1, 1);
+      const startAnim = () => {
+        if (opts.enablePixelate) {
+          animatePixelation(currentImg, img1);
+        } else {
+          drawPixelated(img1, 1);
+        }
+      };
+
       if (img1.complete) startAnim();
       else img1.addEventListener('load', startAnim, { once: true });
       currentImg = img1;
@@ -72,9 +115,16 @@
   }
 
   function initAll(root = document) {
-    root.querySelectorAll('canvas.auciel-product-card__canvas').forEach(initCanvas);
+    root.querySelectorAll('canvas.auciel-product-card__canvas').forEach((canvas) => {
+      const sectionEl = canvas.closest('[data-auciel-product-grid]');
+      const enablePixelate = sectionEl?.dataset.pixelate === 'true';
+      const strength = parseInt(sectionEl?.dataset.pixelStrength || '20', 10);
+      const minRatio = Math.max(0.05, Math.min(strength / 100, 0.9));
+      initCanvas(canvas, { enablePixelate, minRatio });
+    });
   }
 
   document.addEventListener('DOMContentLoaded', () => initAll());
   document.addEventListener('shopify:section:load', (e) => initAll(e.target));
 })();
+

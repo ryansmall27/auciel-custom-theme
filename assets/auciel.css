@@ -115,6 +115,11 @@
   min-width: 0;
 }
 
+.auciel-header__logo {
+  max-height: 24px;
+  width: auto;
+}
+
 .auciel-header__brand-divider { color: var(--color-gray); font-size: 0.75rem; }
 .auciel-header__stars { font-size: 16px; white-space: nowrap; }
 .auciel-header__coords { font-size: 7px; white-space: nowrap; }
@@ -163,17 +168,17 @@
 .auciel-hero__frame {
   position: relative;
   width: 100%;
-  aspect-ratio: 3 / 4;
-  min-height: 70vh;
-  max-height: 90vh;
-  overflow: hidden;
+  height: var(--auciel-hero-min-mobile, 80vh);
+  max-height: calc(100vh - 96px);
+  overflow: visible;
   background: var(--color-cream);
+  padding-bottom: clamp(40px, 8vw, 80px);
 }
 
 @media (min-width: 768px) {
   .auciel-hero__frame {
-    aspect-ratio: 16 / 9;
-    min-height: 75vh;
+    height: var(--auciel-hero-min-desktop, 75vh);
+    max-height: calc(100vh - 120px);
   }
 }
 
@@ -214,7 +219,7 @@
   justify-content: center;
   z-index: 2;
   font-family: var(--font-display);
-  font-size: clamp(4rem, 12vw, 8rem);
+  font-size: clamp(4rem, 12vw, var(--auciel-hero-heading-size, 6rem));
   font-weight: 900;
   line-height: 0.85;
   letter-spacing: -0.04em;
@@ -258,7 +263,7 @@
   position: absolute;
   left: 50%;
   bottom: 0;
-  transform: translate(-50%, 50%);
+  transform: translate(-50%, calc(50% + var(--auciel-hero-button-offset, 16px)));
   z-index: 5;
 }
 
@@ -275,7 +280,11 @@
 }
 
 .auciel-hero__button:hover { transform: translateY(4px); box-shadow: none; }
-.auciel-hero__button-text { letter-spacing: 0.08em; font-weight: 700; }
+.auciel-hero__button-text {
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  font-size: var(--auciel-hero-button-size, 1rem);
+}
 
 .auciel-hero__star {
   position: absolute;

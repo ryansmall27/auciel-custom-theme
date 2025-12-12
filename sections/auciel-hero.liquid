@@ -2,7 +2,16 @@
   AUCIEL hero section, based on Figma export.
 {%- endcomment -%}
 
-<section class="auciel-hero auciel-scope grain-texture">
+<section
+  class="auciel-hero auciel-scope grain-texture"
+  style="
+    --auciel-hero-min-mobile: {{ section.settings.height_mobile }}vh;
+    --auciel-hero-min-desktop: {{ section.settings.height_desktop }}vh;
+    --auciel-hero-heading-size: {{ section.settings.heading_size }}rem;
+    --auciel-hero-button-offset: {{ section.settings.button_offset }}px;
+    --auciel-hero-button-size: {{ section.settings.button_size }}rem;
+  "
+>
   <div class="auciel-hero__panel">
     <div class="auciel-hero__frame">
       <svg class="auciel-hero__border" preserveAspectRatio="none" viewBox="0 0 300.53 408.32" aria-hidden="true">
@@ -14,15 +23,24 @@
         </g>
       </svg>
 
-      <div class="auciel-hero__stripes halftone-overlay" aria-hidden="true"></div>
+      {%- if section.settings.show_stripes -%}
+        <div class="auciel-hero__stripes {% if section.settings.show_halftone %}halftone-overlay{% endif %}" aria-hidden="true"></div>
+      {%- endif -%}
 
       <div class="auciel-hero__title" aria-hidden="true">
         {{ section.settings.heading | escape | newline_to_br }}
       </div>
 
-      <div class="auciel-hero__image halftone-overlay">
+      <div class="auciel-hero__image {% if section.settings.show_halftone %}halftone-overlay{% endif %}">
         {%- if section.settings.image != blank -%}
-          {{ section.settings.image | image_url: width: 2400 | image_tag: class: 'auciel-hero__img', loading: 'lazy', alt: section.settings.image.alt | default: section.settings.heading }}
+          {{ section.settings.image
+            | image_url: width: 2400
+            | image_tag:
+              class: 'auciel-hero__img',
+              loading: 'lazy',
+              alt: section.settings.image.alt | default: section.settings.heading,
+              style: "object-fit: #{section.settings.image_fit}; object-position: #{section.settings.image_position};"
+          }}
         {%- else -%}
           <div class="auciel-hero__img-placeholder"></div>
         {%- endif -%}
@@ -44,7 +62,7 @@
         </div>
       {%- endif -%}
 
-      <div class="auciel-hero__star" aria-hidden="true">✦</div>
+      <div class="auciel-hero__star" aria-hidden="true">{{ section.settings.corner_star }}</div>
       <div class="auciel-hero__coords tech-label">{{ section.settings.coords_text }}</div>
     </div>
   </div>
@@ -62,16 +80,85 @@
       "label": "Hero image"
     },
     {
+      "type": "select",
+      "id": "image_fit",
+      "label": "Image fit",
+      "options": [
+        { "value": "cover", "label": "Cover" },
+        { "value": "contain", "label": "Contain" },
+        { "value": "fill", "label": "Fill" }
+      ],
+      "default": "cover"
+    },
+    {
+      "type": "select",
+      "id": "image_position",
+      "label": "Image focal point",
+      "options": [
+        { "value": "center center", "label": "Center" },
+        { "value": "top center", "label": "Top" },
+        { "value": "center left", "label": "Left" },
+        { "value": "center right", "label": "Right" },
+        { "value": "bottom center", "label": "Bottom" }
+      ],
+      "default": "center center"
+    },
+    {
       "type": "textarea",
       "id": "heading",
       "label": "Large heading text",
       "default": "AU\nCIEL"
     },
     {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Heading size (rem)",
+      "min": 3,
+      "max": 10,
+      "step": 0.25,
+      "default": 6
+    },
+    {
+      "type": "range",
+      "id": "height_mobile",
+      "label": "Min height mobile (vh)",
+      "min": 60,
+      "max": 110,
+      "step": 1,
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "height_desktop",
+      "label": "Min height desktop (vh)",
+      "min": 60,
+      "max": 100,
+      "step": 1,
+      "default": 75
+    },
+    {
       "type": "text",
       "id": "button_text",
       "label": "Button text",
       "default": "SHOP"
+    },
+    {
+      "type": "range",
+      "id": "button_size",
+      "label": "Button text size (rem)",
+      "min": 0.9,
+      "max": 1.4,
+      "step": 0.05,
+      "default": 1
+    },
+    {
+      "type": "range",
+      "id": "button_offset",
+      "label": "Button vertical offset (px)",
+      "min": -40,
+      "max": 60,
+      "step": 2,
+      "default": 16
     },
     {
       "type": "url",
@@ -85,9 +172,27 @@
       "default": "0-20° 80°83.74°"
     },
     {
+      "type": "text",
+      "id": "corner_star",
+      "label": "Corner star glyph",
+      "default": "✦"
+    },
+    {
       "type": "checkbox",
       "id": "show_orbital_lines",
       "label": "Show orbital decoration",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_stripes",
+      "label": "Show striped background",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_halftone",
+      "label": "Show halftone overlay",
       "default": true
     }
   ],
@@ -96,4 +201,3 @@
   ]
 }
 {% endschema %}
-
