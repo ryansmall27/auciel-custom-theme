@@ -5,7 +5,7 @@
 
 {%- liquid
   assign menu = section.settings.menu
-  assign sidebar_menu = section.settings.sidebar_menu | default: menu
+  assign sidebar_menu = menu
 -%}
 
 <height-observer variable="header">
@@ -120,12 +120,6 @@
       "type": "link_list",
       "id": "menu",
       "label": "Primary menu",
-      "default": "main-menu"
-    },
-    {
-      "type": "link_list",
-      "id": "sidebar_menu",
-      "label": "Menu drawer (mobile)",
       "default": "main-menu"
     },
     {
@@ -245,10 +239,6 @@
   ],
   "blocks": [
     {
-      "type": "@app",
-      "name": "App block"
-    },
-    {
       "type": "mega_menu",
       "name": "Mega menu images",
       "settings": [
@@ -281,4 +271,3 @@
   ]
 }
 {% endschema %}
-

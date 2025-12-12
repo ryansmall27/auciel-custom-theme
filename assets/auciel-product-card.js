@@ -1,6 +1,4 @@
 (() => {
-  const pixelSteps = [1, 0.8, 0.6, 0.4, 0.25, 0.15, 0.12, 0.15, 0.25, 0.4, 0.6, 0.8, 1];
-
   function initCanvas(canvas) {
     const container = canvas.closest('[data-auciel-card-image]');
     if (!container) return;
@@ -22,7 +20,6 @@
     const ctx = canvas.getContext('2d', { willReadFrequently: true });
     if (!ctx) return;
 
-    let animationFrame = null;
     let currentImg = img1;
 
     function resizeCanvas() {
@@ -43,28 +40,9 @@
       ctx.drawImage(canvas, 0, 0, scaledW, scaledH, 0, 0, w, h);
     }
 
-    function animatePixelation(fromImg, toImg, duration = 500) {
-      const start = performance.now();
-      const midPoint = Math.floor(pixelSteps.length / 2);
-
-      function step(now) {
-        const progress = Math.min((now - start) / duration, 1);
-        const idx = Math.min(Math.floor(progress * (pixelSteps.length - 1)), pixelSteps.length - 1);
-        const blockSize = pixelSteps[idx];
-        const img = idx < midPoint ? fromImg : toImg;
-        drawPixelated(img, blockSize);
-        if (progress < 1) {
-          animationFrame = requestAnimationFrame(step);
-        }
-      }
-
-      animationFrame = requestAnimationFrame(step);
-    }
-
     function onEnter() {
-      if (animationFrame) cancelAnimationFrame(animationFrame);
       const target = img2 || img1;
-      const startAnim = () => animatePixelation(img1, target);
+      const startAnim = () => drawPixelated(target, 1);
       if (img1.complete && target.complete) startAnim();
       else {
         const wait = [];
@@ -76,16 +54,9 @@
     }
 
     function onLeave() {
-      if (animationFrame) cancelAnimationFrame(animationFrame);
-      const source = img2 && currentImg === img2 ? img2 : img1;
-      const startAnim = () => animatePixelation(source, img1);
-      if (source.complete && img1.complete) startAnim();
-      else {
-        const wait = [];
-        if (!source.complete) wait.push(new Promise(r => source.addEventListener('load', r, { once: true })));
-        if (!img1.complete) wait.push(new Promise(r => img1.addEventListener('load', r, { once: true })));
-        Promise.all(wait).then(startAnim);
-      }
+      const startAnim = () => drawPixelated(img1, 1);
+      if (img1.complete) startAnim();
+      else img1.addEventListener('load', startAnim, { once: true });
       currentImg = img1;
     }
 
@@ -107,4 +78,3 @@
   document.addEventListener('DOMContentLoaded', () => initAll());
   document.addEventListener('shopify:section:load', (e) => initAll(e.target));
 })();
-

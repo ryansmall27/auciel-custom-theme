@@ -54,20 +54,31 @@
               <svg viewBox="0 0 29 29" class="auciel-footer__qr-svg" aria-hidden="true">
                 {%- for y in (0..28) -%}
                   {%- for x in (0..28) -%}
-                    {%- assign is_finder_tl = x < 7 and y < 7 -%}
-                    {%- assign is_finder_tr = x > 21 and y < 7 -%}
-                    {%- assign is_finder_bl = x < 7 and y > 21 -%}
                     {%- assign should_fill = false -%}
 
-                    {%- if is_finder_tl or is_finder_tr or is_finder_bl -%}
+                    {%- if x < 7 and y < 7 -%}
                       {%- assign fx = x -%}
                       {%- assign fy = y -%}
-                      {%- if is_finder_tr -%}{%- assign fx = x | minus: 22 -%}{%- endif -%}
-                      {%- if is_finder_bl -%}{%- assign fy = y | minus: 22 -%}{%- endif -%}
-                      {%- assign should_fill = fx == 0 or fx == 6 or fy == 0 or fy == 6 or (fx >= 2 and fx <= 4 and fy >= 2 and fy <= 4) -%}
+                      {%- if fx == 0 or fx == 6 or fy == 0 or fy == 6 or (fx >= 2 and fx <= 4 and fy >= 2 and fy <= 4) -%}
+                        {%- assign should_fill = true -%}
+                      {%- endif -%}
+                    {%- elsif x > 21 and y < 7 -%}
+                      {%- assign fx = x | minus: 22 -%}
+                      {%- assign fy = y -%}
+                      {%- if fx == 0 or fx == 6 or fy == 0 or fy == 6 or (fx >= 2 and fx <= 4 and fy >= 2 and fy <= 4) -%}
+                        {%- assign should_fill = true -%}
+                      {%- endif -%}
+                    {%- elsif x < 7 and y > 21 -%}
+                      {%- assign fx = x -%}
+                      {%- assign fy = y | minus: 22 -%}
+                      {%- if fx == 0 or fx == 6 or fy == 0 or fy == 6 or (fx >= 2 and fx <= 4 and fy >= 2 and fy <= 4) -%}
+                        {%- assign should_fill = true -%}
+                      {%- endif -%}
                     {%- else -%}
                       {%- assign v = x | plus: y -%}
-                      {%- assign should_fill = v | modulo: 3 == 0 -%}
+                      {%- if v | modulo: 3 == 0 -%}
+                        {%- assign should_fill = true -%}
+                      {%- endif -%}
                     {%- endif -%}
 
                     {%- if should_fill -%}
@@ -153,4 +164,3 @@
   ]
 }
 {% endschema %}
-
